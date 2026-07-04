@@ -1,0 +1,12 @@
+# Cowork workstation internal files (not part of the published website)
+CLAUDE.md
+MEMORY.md
+
+# Local dev / preview config
+.claude/
+
+# OS and editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

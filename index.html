@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Austin Donovan | Data Analyst Portfolio</title>
+<meta name="description" content="Austin Donovan, data analyst in Orlando, FL. SQL, Python, and Power BI portfolio: e-commerce segmentation, Spotify chart dynamics, a marketing A/B test, and product clustering with k-means.">
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="assets/js/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- ═══ NAV ═══ -->
+<div data-screen-label="Nav" style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 14px clamp(20px, 5vw, 40px); border-bottom: 1px solid rgba(255,255,255,.06); background: rgba(9,9,11,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px)">
+  <span onclick="{{goTop}}" style="font: 600 14px 'Geist Mono',monospace; color: #fafafa; cursor: pointer">AD<span style="color:#a78bfa">.</span></span>
+  <div id="nav-links" style="display: flex; gap: 26px; font: 400 13px 'Geist',sans-serif">
+    <span onclick="{{goWork}}" style="{{navWorkStyle}}" style-hover="color: #fafafa">Work</span>
+    <span onclick="{{goSkills}}" style="{{navSkillsStyle}}" style-hover="color: #fafafa">Skills</span>
+    <span onclick="{{goExp}}" style="{{navExpStyle}}" style-hover="color: #fafafa">Experience</span>
+    <span onclick="{{goAbout}}" style="{{navAboutStyle}}" style-hover="color: #fafafa">About</span>
+    <span onclick="{{goContact}}" style="{{navContactStyle}}" style-hover="color: #fafafa">Contact</span>
+  </div>
+  <a href="assets/Austin_Donovan_Resume.pdf" download="Austin_Donovan_Resume.pdf" style="font: 500 12.5px 'Geist',sans-serif; color: #09090b; background: #fafafa; padding: 7px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; transition: opacity .15s" style-hover="opacity: .85">Resume ↓</a>
+</div>
+
+<!-- ═══ HERO + CHAT ═══ -->
+<div id="top" data-screen-label="Hero" style="position: relative; padding: clamp(48px, 8vh, 76px) clamp(20px, 5vw, 40px) 44px; text-align: center; overflow: hidden">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 55% at 50% 0%, rgba(139,92,246,.11), transparent); pointer-events: none"></div>
+  <div style="position: relative; max-width: 720px; margin: 0 auto">
+    <div style="font: 400 14px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 16px">-- Data Analyst · Orlando, FL</div>
+    <h1 style="margin: 0 auto 14px; font: 600 clamp(34px, 6.5vw, 50px)/1.15 'Geist',sans-serif; color: #fafafa; letter-spacing: -.03em">Hi, I'm <em style="color: #a78bfa; font-style: italic">Austin</em><span style="color: rgba(255,255,255,.5)">.</span><span style="{{cursorStyle}}"></span></h1>
+    <p style="margin: 0 auto 30px; font: 400 15px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55); max-width: 520px"></p>
+
+    <sc-if value="{{showChat}}" hint-placeholder-val="{{ true }}">
+    <div style="max-width: 620px; margin: 0 auto; text-align: left">
+      <div style="font: 400 12px 'Geist',sans-serif; color: rgba(255,255,255,.4); margin-bottom: 10px; text-align: center">Ask below, or just scroll.</div>
+      <div style="display: flex; align-items: center; gap: 12px; background: rgba(16,16,20,.9); border: 1px solid rgba(139,92,246,.4); border-radius: 14px; padding: 12px 12px 12px 18px; box-shadow: 0 0 40px rgba(139,92,246,.08), 0 8px 32px rgba(0,0,0,.5); transition: border-color .2s" style-focus="border-color: #8b5cf6">
+        <input value="{{query}}" onchange="{{onQueryChange}}" onkeydown="{{onKeyDown}}" placeholder="Ask about projects, skills, experience…" style="flex: 1; min-width: 0; background: transparent; border: none; outline: none; font: 400 14.5px 'Geist',sans-serif; color: #fafafa; caret-color: #a78bfa">
+        <div onclick="{{onSend}}" style="flex: none; width: 32px; height: 32px; border-radius: 9px; background: #8b5cf6; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; cursor: pointer; transition: background .15s" style-hover="background: #7c3aed">↑</div>
+      </div>
+      <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 14px">
+        <sc-for list="{{starterChips}}" as="c" hint-placeholder-count="4">
+          <span onclick="{{c.onAsk}}" style="font: 400 12px 'Geist',sans-serif; color: rgba(255,255,255,.55); padding: 5px 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09); border-radius: 20px; cursor: pointer; transition: all .15s" style-hover="border-color: #8b5cf6; color: #c4b5fd">{{c.q}}</span>
+        </sc-for>
+      </div>
+
+      <!-- thread -->
+      <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 18px">
+        <sc-for list="{{messages}}" as="m" hint-placeholder-count="1">
+          <div style="animation: fadeUp .3s ease both">
+            <sc-if value="{{m.isUser}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; justify-content: flex-end">
+                <div style="background: rgba(139,92,246,.14); border: 1px solid rgba(139,92,246,.3); color: #ede9fe; font: 400 13.5px/1.5 'Geist',sans-serif; padding: 9px 15px; border-radius: 13px 13px 4px 13px; max-width: 420px">{{m.text}}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{m.isAi}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; gap: 12px">
+                <div style="flex: none; width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg,#8b5cf6,#6d28d9); display: flex; align-items: center; justify-content: center; font: 600 11px 'Geist Mono',monospace; color: #fff; margin-top: 2px">A</div>
+                <div style="flex: 1; min-width: 0">
+                  <div style="font: 400 13.5px/1.65 'Geist',sans-serif"><sc-for list="{{m.parts}}" as="p" hint-placeholder-count="1"><span style="{{p.style}}">{{p.t}}</span></sc-for></div>
+                  <sc-if value="{{m.hasCard}}" hint-placeholder-val="{{ false }}">
+                    <div onclick="{{m.card.onOpen}}" style="margin-top: 12px; background: #101014; border: 1px solid rgba(255,255,255,.09); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; cursor: pointer; transition: border-color .2s" style-hover="border-color: rgba(139,92,246,.5)">
+                      <div style="flex: 1; min-width: 200px">
+                        <div style="font: 500 13.5px 'Geist',sans-serif; color: #fafafa; margin-bottom: 3px">{{m.card.title}}</div>
+                        <div style="font: 400 12px/1.5 'Geist',sans-serif; color: rgba(255,255,255,.5)">{{m.card.desc}}</div>
+                      </div>
+                      <div style="text-align: right">
+                        <div style="font: 600 22px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">{{m.card.metric}}</div>
+                        <div style="font: 400 10px 'Geist Mono',monospace; color: rgba(255,255,255,.4)">{{m.card.metricLabel}}</div>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px">
+                    <sc-for list="{{m.followups}}" as="f" hint-placeholder-count="1">
+                      <span onclick="{{f.onAsk}}" style="font: 400 11.5px 'Geist',sans-serif; color: rgba(255,255,255,.6); padding: 5px 11px; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; cursor: pointer; transition: all .15s" style-hover="border-color: #8b5cf6; color: #c4b5fd">{{f.q}}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{thinking}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; gap: 12px; animation: fadeUp .2s ease both">
+            <div style="flex: none; width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg,#8b5cf6,#6d28d9); display: flex; align-items: center; justify-content: center; font: 600 11px 'Geist Mono',monospace; color: #fff">A</div>
+            <div style="display: flex; align-items: center; gap: 5px; padding: 6px 0">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; animation: pulseDot 1s ease infinite"></span>
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; animation: pulseDot 1s ease .2s infinite"></span>
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; animation: pulseDot 1s ease .4s infinite"></span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <div style="margin-top: 34px; font: 400 11.5px 'Geist Mono',monospace; color: rgba(255,255,255,.3)">▼ or keep scrolling, the whole portfolio is below</div>
+  </div>
+</div>
+
+<!-- ═══ WORK ═══ -->
+<div id="work" data-screen-label="Work" style="padding: 56px clamp(20px, 5vw, 40px) 8px; max-width: 1080px; margin: 0 auto">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 20px">
+    <div>
+      <div style="font: 400 13px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 8px">-- featured work</div>
+      <h2 style="margin: 0; font: 600 26px/1.2 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">Four end-to-end analyses.</h2>
+    </div>
+    <a href="https://github.com/AustinLD" target="_blank" rel="noopener" style="font: 400 12.5px 'Geist Mono',monospace; color: #a78bfa; text-decoration: none">github.com/AustinLD ↗</a>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px">
+
+    <div onclick="{{openOlist}}" style="background: #101014; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 22px 24px; cursor: pointer; transition: border-color .2s" style-hover="border-color: rgba(139,92,246,.45)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <span style="font: 600 24px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">100K+</span>
+        <span style="font: 400 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">orders analyzed</span>
+      </div>
+      <div style="font: 500 15.5px 'Geist',sans-serif; color: #fafafa; margin: 10px 0 6px">E-Commerce Performance &amp; Customer Segmentation</div>
+      <p style="margin: 0 0 12px; font: 400 13px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55)">Designed a 9-table MySQL database over a Brazilian marketplace's order history to explain 20x revenue growth and diagnose review problems.</p>
+      <div style="font: 400 12px/1.9 'Geist Mono',monospace; color: rgba(255,255,255,.45)">
+        <div>→ late delivery drives a <span style="color:#c4b5fd">1.72-pt review gap</span> (4.29 vs 2.57)</div>
+        <div>→ Champions segment: <span style="color:#c4b5fd">6.6% of customers → R$1.72M</span></div>
+      </div>
+      <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap">
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">SQL</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Python</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Power BI</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">DAX</span>
+      </div>
+    </div>
+
+    <div onclick="{{openSpotify}}" style="background: #101014; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 22px 24px; cursor: pointer; transition: border-color .2s" style-hover="border-color: rgba(139,92,246,.45)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <span style="font: 600 24px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">26M</span>
+        <span style="font: 400 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">rows processed</span>
+      </div>
+      <div style="font: 500 15.5px 'Geist',sans-serif; color: #fafafa; margin: 10px 0 6px">Spotify Charts: Dynamics &amp; Streaming Concentration</div>
+      <p style="margin: 0 0 12px; font: 400 13px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55)">Five years of daily US Top 200 data (7,878 songs): what separates lasting hits from one-week spikes.</p>
+      <div style="font: 400 12px/1.9 'Geist Mono',monospace; color: rgba(255,255,255,.45)">
+        <div>→ <span style="color:#c4b5fd">55% of hits last ≤ 1 week</span>; only 11% reach top 10</div>
+        <div>→ top 1% of songs capture <span style="color:#c4b5fd">21% of all streams</span></div>
+      </div>
+      <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap">
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Python</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">SQL</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Power BI</span>
+      </div>
+    </div>
+
+    <div onclick="{{openAbtest}}" style="background: #101014; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 22px 24px; cursor: pointer; transition: border-color .2s" style-hover="border-color: rgba(139,92,246,.45)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <span style="font: 600 24px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">+43%</span>
+        <span style="font: 400 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">conversion lift proven</span>
+      </div>
+      <div style="font: 500 15.5px 'Geist',sans-serif; color: #fafafa; margin: 10px 0 6px">Marketing A/B Test: Ad Campaign Conversion</div>
+      <p style="margin: 0 0 12px; font: 400 13px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55)">Randomized ad-vs-PSA experiment across 588,101 users: did the campaign cause a real lift, and how large?</p>
+      <div style="font: 400 12px/1.9 'Geist Mono',monospace; color: rgba(255,255,255,.45)">
+        <div>→ z = 7.4, <span style="color:#c4b5fd">p &lt; 0.001</span>; 95% CI 0.60–0.94 pp</div>
+        <div>→ <span style="color:#c4b5fd">10,000-sample bootstrap</span>: no resample ≤ 0</div>
+      </div>
+      <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap">
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Python</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">SQL</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Power BI</span>
+      </div>
+    </div>
+
+    <div onclick="{{openKmeans}}" style="background: #101014; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 22px 24px; cursor: pointer; transition: border-color .2s" style-hover="border-color: rgba(139,92,246,.45)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+        <span style="font: 600 24px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">4,479</span>
+        <span style="font: 400 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">SKUs clustered</span>
+      </div>
+      <div style="font: 500 15.5px 'Geist',sans-serif; color: #fafafa; margin: 10px 0 6px">Product Segmentation with K-Means Clustering</div>
+      <p style="margin: 0 0 12px; font: 400 13px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55)">Clustered a UK retailer's 1.07M-row transaction log into five product segments, benchmarked against ABC/Pareto.</p>
+      <div style="font: 400 12px/1.9 'Geist Mono',monospace; color: rgba(255,255,255,.45)">
+        <div>→ bestsellers: <span style="color:#c4b5fd">24% of SKUs → 78% of revenue</span></div>
+        <div>→ flagged a returns-prone segment (<span style="color:#c4b5fd">96% median return rate</span>)</div>
+      </div>
+      <div style="display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap">
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">scikit-learn</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Python</span>
+        <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">Power BI</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SKILLS ═══ -->
+<div id="skills" data-screen-label="Skills" style="padding: 64px clamp(20px, 5vw, 40px) 8px; max-width: 1080px; margin: 0 auto">
+  <div style="font: 400 13px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 8px">-- skills &amp; tools</div>
+  <h2 style="margin: 0 0 20px; font: 600 26px/1.2 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">The stack behind the findings.</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px">
+    <sc-for list="{{skillGroups}}" as="g" hint-placeholder-count="6">
+      <div style="background: #101014; border: 1px solid rgba(255,255,255,.08); border-radius: 13px; padding: 18px 20px">
+        <div style="font: 500 11px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: .08em; margin-bottom: 12px">{{g.label}}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px">
+          <sc-for list="{{g.items}}" as="s" hint-placeholder-count="4">
+            <span style="font: 400 12px 'Geist',sans-serif; color: rgba(255,255,255,.7); padding: 4px 11px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 16px">{{s}}</span>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<div id="experience" data-screen-label="Experience" style="padding: 64px clamp(20px, 5vw, 40px) 8px; max-width: 800px; margin: 0 auto">
+  <div style="font: 400 13px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 8px">-- experience</div>
+  <h2 style="margin: 0 0 24px; font: 600 26px/1.2 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">Where I've worked.</h2>
+
+  <div style="display: flex; flex-direction: column">
+    <div style="display: grid; grid-template-columns: 20px 1fr; gap: 0 18px">
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div style="width: 11px; height: 11px; border-radius: 50%; background: #8b5cf6; box-shadow: 0 0 12px rgba(139,92,246,.6); margin-top: 6px"></div>
+        <div style="flex: 1; width: 1.5px; background: linear-gradient(to bottom, rgba(139,92,246,.5), rgba(255,255,255,.08))"></div>
+      </div>
+      <div style="padding-bottom: 32px">
+        <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+          <span style="font: 500 16px 'Geist',sans-serif; color: #fafafa">Data Analyst, CWI Holdings</span>
+          <span style="font: 400 12px 'Geist Mono',monospace; color: rgba(255,255,255,.4)">2023 – 2025</span>
+        </div>
+        <div style="margin-top: 10px; font: 400 13px/1.9 'Geist',sans-serif; color: rgba(255,255,255,.55)">
+          <div>→ Designed and maintained a MySQL warehouse database tracking 60+ material types, tightening inventory control against theft and waste.</div>
+          <div>→ Automated ETL and reporting with Python, VBA, and Excel, cutting manual update time and improving accuracy.</div>
+          <div>→ Built custom JavaScript functions to automate repetitive tasks across internal data systems.</div>
+          <div>→ Ran data-quality audits for nulls, duplicates, and outliers, and applied consistent data governance across reports.</div>
+          <div>→ Delivered cross-department reporting and visualizations in Excel and Google Sheets to guide management decisions.</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div style="width: 11px; height: 11px; border-radius: 50%; background: rgba(139,92,246,.5); margin-top: 6px"></div>
+      </div>
+      <div>
+        <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+          <span style="font: 500 16px 'Geist',sans-serif; color: #fafafa">Client Specialist, AAA</span>
+          <span style="font: 400 12px 'Geist Mono',monospace; color: rgba(255,255,255,.4)">2022 – 2023</span>
+        </div>
+        <div style="margin-top: 10px; font: 400 13px/1.9 'Geist',sans-serif; color: rgba(255,255,255,.55)">
+          <div>→ Managed customer data records and supported reporting for client retention and membership analytics.</div>
+          <div>→ Streamlined client onboarding and data entry in Salesforce CRM, reducing administrative errors.</div>
+          <div>→ Improved client retention through cleaner records and a faster onboarding process.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<div id="about" data-screen-label="About" style="padding: 64px clamp(20px, 5vw, 40px) 8px; max-width: 800px; margin: 0 auto; text-align: center">
+  <div style="font: 400 13px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 8px">-- about</div>
+  <h2 style="margin: 0 0 16px; font: 600 26px/1.2 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">What I'm into.</h2>
+  <p style="margin: 0 auto 28px; font: 400 14.5px/1.75 'Geist',sans-serif; color: rgba(255,255,255,.6); max-width: 620px">I'm a data analyst in Orlando with 2+ years of professional experience and a portfolio spanning e-commerce, streaming, experimentation, and machine learning. I care about statistically sound findings over dashboards for their own sake. Every claim on this page traces back to a query you can run, in a repo you can clone.</p>
+  <div style="display: flex; justify-content: center; gap: clamp(20px, 5vw, 48px); flex-wrap: wrap">
+    <div>
+      <div style="font: 600 26px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">2+</div>
+      <div style="font: 400 11px 'Geist Mono',monospace; color: rgba(255,255,255,.4); margin-top: 2px">years experience</div>
+    </div>
+    <div>
+      <div style="font: 600 26px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">+43%</div>
+      <div style="font: 400 11px 'Geist Mono',monospace; color: rgba(255,255,255,.4); margin-top: 2px">proven conversion lift</div>
+    </div>
+    <div>
+      <div style="font: 600 26px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">26M</div>
+      <div style="font: 400 11px 'Geist Mono',monospace; color: rgba(255,255,255,.4); margin-top: 2px">rows, largest dataset</div>
+    </div>
+    <div>
+      <div style="font: 600 26px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: -.02em">588K</div>
+      <div style="font: 400 11px 'Geist Mono',monospace; color: rgba(255,255,255,.4); margin-top: 2px">users A/B tested</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONTACT ═══ -->
+<div id="contact" data-screen-label="Contact" style="padding: 72px clamp(20px, 5vw, 40px) 64px; max-width: 800px; margin: 0 auto; text-align: center">
+  <div style="font: 400 13px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 8px">-- contact</div>
+  <h2 style="margin: 0 0 12px; font: 600 clamp(26px, 4.5vw, 34px)/1.2 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">Let's talk data<span style="color: #a78bfa">.</span></h2>
+  <p style="margin: 0 auto 28px; font: 400 14px/1.6 'Geist',sans-serif; color: rgba(255,255,255,.55); max-width: 460px">Open to data analyst roles. Email is fastest, or find the full case studies on GitHub.</p>
+  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
+    <a href="mailto:AustinLDonovan@gmail.com" style="font: 500 13.5px 'Geist',sans-serif; color: #09090b; background: #fafafa; padding: 11px 22px; border-radius: 10px; text-decoration: none; transition: opacity .15s" style-hover="opacity: .85">Email me</a>
+    <a href="https://linkedin.com/in/austinLD" target="_blank" rel="noopener" style="font: 500 13.5px 'Geist',sans-serif; color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); padding: 10px 22px; border-radius: 10px; text-decoration: none; transition: border-color .15s" style-hover="border-color: #8b5cf6">LinkedIn</a>
+    <a href="https://github.com/AustinLD" target="_blank" rel="noopener" style="font: 500 13.5px 'Geist',sans-serif; color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); padding: 10px 22px; border-radius: 10px; text-decoration: none; transition: border-color .15s" style-hover="border-color: #8b5cf6">GitHub</a>
+  </div>
+  <div style="margin-top: 18px; font: 400 12px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">AustinLDonovan@gmail.com · Orlando, FL</div>
+</div>
+
+<!-- ═══ PROJECT MODAL ═══ -->
+<sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Project modal" style="position: fixed; inset: 0; z-index: 100; background: rgba(5,5,7,.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: clamp(12px, 3vw, 40px)" onclick="{{closeModal}}">
+    <div onclick="{{stopProp}}" style="width: 100%; max-width: 960px; max-height: 92vh; overflow-y: auto; background: #0d0d11; border: 1px solid rgba(139,92,246,.3); border-radius: 18px; box-shadow: 0 32px 80px rgba(0,0,0,.7); animation: fadeUp .25s ease both">
+      <!-- modal header -->
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 24px 28px 0">
+        <div>
+          <div style="font: 400 12px 'Geist Mono',monospace; color: #6b7280; margin-bottom: 6px">-- case study</div>
+          <h3 style="margin: 0 0 4px; font: 600 22px/1.25 'Geist',sans-serif; color: #fafafa; letter-spacing: -.02em">{{modal.title}}</h3>
+          <div style="font: 400 12.5px 'Geist Mono',monospace; color: rgba(255,255,255,.45)">{{modal.subtitle}}</div>
+        </div>
+        <div onclick="{{closeModal}}" style="flex: none; width: 32px; height: 32px; border-radius: 9px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.7); font-size: 15px; cursor: pointer; transition: border-color .15s" style-hover="border-color: #8b5cf6">✕</div>
+      </div>
+      <!-- dashboard slot -->
+      <div style="margin: 20px 28px 0; border: 1px solid rgba(255,255,255,.09); border-radius: 12px; overflow: hidden; background: #101014">
+        <sc-if value="{{modal.hasShots}}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{modal.shotIsVideo}}" hint-placeholder-val="{{ false }}">
+            <video src="{{modal.shotSrc}}" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="width: 100%; display: block; background: #0d0d11"></video>
+          </sc-if>
+          <sc-if value="{{modal.shotIsImage}}" hint-placeholder-val="{{ false }}">
+            <img src="{{modal.shotSrc}}" alt="{{modal.shotCap}}" style="width: 100%; display: block; background: #0d0d11">
+          </sc-if>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,.09)">
+            <div style="min-width: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap">
+              <span style="font: 500 10.5px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: .06em">{{modal.shotTag}}</span>
+              <span style="font: 400 12px 'Geist',sans-serif; color: rgba(255,255,255,.55)">{{modal.shotCap}}</span>
+            </div>
+            <sc-if value="{{modal.multiShots}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 9px; flex: none">
+                <div onclick="{{modal.onPrevShot}}" style="width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.7); font-size: 13px; cursor: pointer; transition: border-color .15s" style-hover="border-color: #8b5cf6">←</div>
+                <span style="font: 400 11px 'Geist Mono',monospace; color: rgba(255,255,255,.45)">{{modal.shotPos}}</span>
+                <div onclick="{{modal.onNextShot}}" style="width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.7); font-size: 13px; cursor: pointer; transition: border-color .15s" style-hover="border-color: #8b5cf6">→</div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+      <!-- body -->
+      <div style="padding: 22px 28px 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 20px">
+        <div>
+          <div style="font: 500 10.5px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: .08em; margin-bottom: 8px">THE QUESTION</div>
+          <p style="margin: 0; font: 400 13px/1.65 'Geist',sans-serif; color: rgba(255,255,255,.6)">{{modal.question}}</p>
+        </div>
+        <div>
+          <div style="font: 500 10.5px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: .08em; margin-bottom: 8px">THE METHOD</div>
+          <p style="margin: 0; font: 400 13px/1.65 'Geist',sans-serif; color: rgba(255,255,255,.6)">{{modal.method}}</p>
+        </div>
+        <div>
+          <div style="font: 500 10.5px 'Geist Mono',monospace; color: #a78bfa; letter-spacing: .08em; margin-bottom: 8px">KEY FINDINGS</div>
+          <div style="font: 400 12.5px/1.9 'Geist Mono',monospace; color: rgba(255,255,255,.5)">
+            <sc-for list="{{modal.findings}}" as="f" hint-placeholder-count="3"><div>→ {{f}}</div></sc-for>
+          </div>
+        </div>
+      </div>
+      <!-- footer -->
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 0 28px 24px">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap">
+          <sc-for list="{{modal.tech}}" as="t" hint-placeholder-count="3">
+            <span style="font: 500 10.5px 'Geist Mono',monospace; color: rgba(255,255,255,.6); padding: 3px 8px; background: rgba(255,255,255,.06); border-radius: 5px">{{t}}</span>
+          </sc-for>
+        </div>
+        <a href="{{modal.github}}" target="_blank" rel="noopener" style="font: 500 12.5px 'Geist',sans-serif; color: #09090b; background: #fafafa; padding: 9px 18px; border-radius: 9px; text-decoration: none; transition: opacity .15s" style-hover="opacity: .85">View on GitHub ↗</a>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ═══ FOOTER ═══ -->
+<div data-screen-label="Footer" style="border-top: 1px solid rgba(255,255,255,.06); padding: 22px clamp(20px, 5vw, 40px); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; max-width: 1080px; margin: 0 auto">
+  <span style="font: 400 12px 'Geist Mono',monospace; color: rgba(255,255,255,.35)">© 2026 Austin Donovan <span style="color: #6b7280">-- built on evidence</span></span>
+  <span onclick="{{goTop}}" style="font: 400 12px 'Geist Mono',monospace; color: rgba(255,255,255,.5); cursor: pointer; transition: color .15s" style-hover="color: #a78bfa">back to top ↑</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;showChat&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;heroCursor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
+
+class Component extends DCLogic {
+  state = { query: "", messages: [], thinking: false, active: "", openProject: null, shotIndex: 0 };
+
+  projects() {
+    return {
+      olist: {
+        title: "E-Commerce Performance & Customer Segmentation",
+        subtitle: "Olist · 100K+ orders · MySQL + Python + Power BI",
+        question: "What actually drove a Brazilian marketplace's 20x revenue growth, and why were reviews suffering?",
+        method: "Designed a 9-table MySQL database over the full order history; decomposed revenue into volume vs. AOV with window functions; RFM-segmented 93K+ customers in Python; shipped a Power BI dashboard with custom DAX.",
+        findings: ["growth was volume-driven, AOV stayed flat", "late delivery → 1.72-pt review gap (4.29 vs 2.57)", "Champions: 6.6% of customers → R$1.72M"],
+        tech: ["SQL", "Python", "Power BI", "DAX"],
+        github: "https://github.com/AustinLD/Project-1---E-Commerce-Analysis",
+        shots: [
+          { src: "assets/img/olist/demo_interactive.mp4", cap: "Cross-filtering the live report, recorded in Power BI Desktop", tag: "POWER BI DEMO" },
+          { src: "assets/img/olist/monthly_revenue_orders.png", cap: "Monthly revenue and order volume, growth was volume-driven", tag: "ANALYSIS CHARTS" },
+          { src: "assets/img/olist/delay_vs_review.png", cap: "Average review score by delivery timing", tag: "ANALYSIS CHARTS" },
+          { src: "assets/img/olist/rfm_revenue_by_segment.png", cap: "Revenue by RFM segment", tag: "ANALYSIS CHARTS" },
+          { src: "assets/img/olist/rfm_segment_distribution.png", cap: "Customer distribution across RFM segments", tag: "ANALYSIS CHARTS" }
+        ]
+      },
+      spotify: {
+        title: "Spotify Charts: Dynamics & Streaming Concentration",
+        subtitle: "26M rows · 5 years of US Top 200 · Pandas + SQL + Power BI",
+        question: "What separates lasting hits from one-week spikes, and how concentrated is streaming attention?",
+        method: "Processed a 26M-row (3.4GB) daily chart dataset in chunked Pandas passes; built chart-run and rank-delta analyses with SQL window functions; four-page Power BI report.",
+        findings: ["55% of hits last ≤ 1 week; 11% reach top 10", "top 1% of songs capture 21% of all streams", "9 of 12 biggest climbs traced to external events"],
+        tech: ["Python", "SQL", "Power BI"],
+        github: "https://github.com/AustinLD/spotify-charts-analysis",
+        shots: [
+          { src: "assets/img/spotify/demo_interactive.mp4", cap: "Cross-filtering the live report, recorded in Power BI Desktop", tag: "POWER BI DEMO" },
+          { src: "assets/img/spotify/1_overview.png", cap: "Overview: headline KPIs and the five-year streaming trend", tag: "POWER BI DASHBOARD" },
+          { src: "assets/img/spotify/2_chart_dynamics.png", cap: "Chart dynamics: how long songs last, debut vs peak", tag: "POWER BI DASHBOARD" },
+          { src: "assets/img/spotify/3_concentration.png", cap: "Concentration: how few songs capture most streams", tag: "POWER BI DASHBOARD" },
+          { src: "assets/img/spotify/4_momentum.png", cap: "Climbers: the biggest single-week jumps into the top 10", tag: "POWER BI DASHBOARD" }
+        ]
+      },
+      abtest: {
+        title: "Marketing A/B Test: Ad Campaign Conversion",
+        subtitle: "588,101 users · randomized experiment · Python + SQL",
+        question: "Did the ad campaign cause a real conversion lift, and how large, with what confidence?",
+        method: "Two-proportion z-test and chi-square on the randomized ad-vs-PSA split; 95% CI on the lift; 10,000-sample bootstrap; kept causal claims strictly to the randomized comparison.",
+        findings: ["+43% relative lift, z = 7.4, p < 0.001", "95% CI: 0.60–0.94 pp; no bootstrap resample ≤ 0", "exposure curve reported as correlation only"],
+        tech: ["Python", "SQL", "Power BI"],
+        github: "https://github.com/AustinLD/marketing-ab-test-analysis",
+        shots: [
+          { src: "assets/img/abtest/demo_interactive.mp4", cap: "Cross-filtering the live report, recorded in Power BI Desktop", tag: "POWER BI DEMO" },
+          { src: "assets/img/abtest/1_results.png", cap: "Results: lift, significance, and confidence interval", tag: "DASHBOARD PREVIEW" },
+          { src: "assets/img/abtest/2_exposure.png", cap: "Exposure: conversion vs ads seen (correlational, not randomized)", tag: "DASHBOARD PREVIEW" },
+          { src: "assets/img/abtest/3_timing.png", cap: "Timing: which days and hours convert best", tag: "DASHBOARD PREVIEW" },
+          { src: "assets/img/abtest/4_segments.png", cap: "Segments: treatment-vs-control lift by day", tag: "DASHBOARD PREVIEW" }
+        ]
+      },
+      kmeans: {
+        title: "Product Segmentation with K-Means Clustering",
+        subtitle: "4,479 SKUs · 1.07M transactions · scikit-learn",
+        question: "Can clustering reveal product segments that a flat ABC/Pareto ranking hides?",
+        method: "Engineered eight SKU-level features from a 1.07M-row UK retail log; log transforms + scaling; chose k = 5 via elbow and silhouette; benchmarked clusters against ABC analysis.",
+        findings: ["bestsellers: 24% of SKUs → 78% of revenue", "flagged a returns-prone segment (96% median return rate)", "12 problem products invisible to ABC ranking"],
+        tech: ["scikit-learn", "Python", "Power BI"],
+        github: "https://github.com/AustinLD/Product-Segmentation",
+        shots: [
+          { src: "assets/img/kmeans/demo_interactive.mp4", cap: "Cross-filtering the live report, recorded in Power BI Desktop", tag: "POWER BI DEMO" },
+          { src: "assets/img/kmeans/fig_segments_pca.png", cap: "The five product segments in PCA space", tag: "ANALYSIS CHARTS" },
+          { src: "assets/img/kmeans/fig_k_selection.png", cap: "Choosing k: elbow inertia and silhouette scores", tag: "ANALYSIS CHARTS" },
+          { src: "assets/img/kmeans/fig_revenue_by_segment.png", cap: "Revenue by segment", tag: "ANALYSIS CHARTS" }
+        ]
+      }
+    };
+  }
+
+  // ---- knowledge base ----
+  hl(t) { return { t: t, style: "color:#c4b5fd;font-weight:500" }; }
+  tx(t) { return { t: t, style: "color:rgba(255,255,255,.82)" }; }
+
+  kb() {
+    const h = this.hl.bind(this), t = this.tx.bind(this);
+    return [
+      { keys: ["python", "pandas", "scikit", "sklearn"], parts: [t("Yes, Python is one of my core tools. I work in "), h("Pandas and scikit-learn"), t(" daily: processed a 26M-row dataset, ran a 10,000-sample bootstrap, and clustered 4,479 SKUs with k-means.")],
+        card: { metric: "4,479", metricLabel: "SKUs clustered", title: "Product Segmentation with K-Means", desc: "scikit-learn · elbow + silhouette · 5 segments", section: "work" },
+        followups: ["Do you know SQL?", "What's your biggest dataset?", "How do you use statistics?"] },
+
+      { keys: ["sql", "mysql", "database", "query", "queries", "cte", "window function"], parts: [t("Advanced SQL is my home base: "), h("CTEs, window functions, multi-table modeling"), t(". I designed a 9-table MySQL database for the Olist analysis and wrote ranking analyses across five years of Spotify chart data.")],
+        card: { metric: "100K+", metricLabel: "orders analyzed", title: "E-Commerce Performance & Segmentation", desc: "MySQL · 9 relational tables · window functions", section: "work" },
+        followups: ["What did you find at Olist?", "Python too?", "Show me your dashboards"] },
+
+      { keys: ["a/b", "ab test", "statistic", "hypothesis", "test", "significance", "experiment"], parts: [t("My strongest statistical work is a randomized ad-vs-PSA experiment across "), h("588,101 users"), t(": a "), h("43% relative conversion lift"), t(" (z = 7.4, p < 0.001), bounded with a 95% CI and a 10,000-sample bootstrap.")],
+        card: { metric: "+43%", metricLabel: "conversion lift", title: "Marketing A/B Test", desc: "Two-proportion z-test · chi-square · bootstrap CI", section: "work" },
+        followups: ["How did you handle non-randomized exposure?", "What else have you shipped?"] },
+
+      { keys: ["exposure", "randomiz", "causation", "correlation", "causal"], parts: [t("Carefully. Conversion climbed from 0.16% (1 ad seen) to 17% (100+ ads), but exposure wasn't randomized, so I kept the "), h("causal claim on the randomized ad-vs-control gap"), t(" and reported the exposure curve as correlation only.")],
+        card: null,
+        followups: ["Show me your dashboards", "What's your biggest dataset?"] },
+
+      { keys: ["power bi", "powerbi", "dashboard", "dax", "tableau", "visuali", "chart"], parts: [t("Every project ships with an interactive "), h("Power BI dashboard"), t(": custom DAX measures and custom themes. The Spotify analysis runs four pages: trends, chart dynamics, concentration, and top-10 climbers.")],
+        card: { metric: "26M", metricLabel: "rows behind it", title: "Spotify Charts Analysis", desc: "Power BI · custom dark theme · 4 pages", section: "work" },
+        followups: ["What did you find in the Spotify data?", "Do you know DAX?"] },
+
+      { keys: ["biggest", "largest", "big data", "dataset", "26m", "scale"], parts: [t("A "), h("26M-row (3.4GB)"), t(" Spotify streaming dataset: five years of daily US Top 200 charts, processed in Pandas into an analysis-ready slice.")],
+        card: { metric: "26M", metricLabel: "rows processed", title: "Spotify Charts Analysis", desc: "Pandas · SQL window functions · Power BI", section: "work" },
+        followups: ["What did you find in it?", "How do you handle data that big?"] },
+
+      { keys: ["spotify", "streaming", "music", "find in it", "what did you find"], parts: [h("55% of charting songs last a week or less"), t("; only 11% ever reach the top 10. Streaming is heavily concentrated: the top 1% of songs capture 21% of all streams, and 9 of the 12 biggest single-week climbs traced to external events, not organic momentum.")],
+        card: { metric: "21%", metricLabel: "streams to top 1%", title: "Spotify Charts Analysis", desc: "Chart runs · rank deltas · concentration", section: "work" },
+        followups: ["How do you handle data that big?", "What else have you shipped?"] },
+
+      { keys: ["handle", "3.4", "gb", "memory", "process"], parts: [t("Filter early, validate often: I reshaped the raw 26M rows in "), h("chunked Pandas passes"), t(", validated against known chart totals, and pushed heavy aggregation into SQL window functions.")],
+        card: null,
+        followups: ["Do you know SQL?", "Show your projects"] },
+
+      { keys: ["olist", "e-commerce", "ecommerce", "rfm", "customer", "segment", "churn", "review"], parts: [t("At Olist I decomposed "), h("20x revenue growth"), t(" (volume-driven, AOV flat), traced poor reviews to late delivery, a 1.72-point score gap, and RFM-segmented 93,000+ customers: the top 6.6% generated R$1.72M.")],
+        card: { metric: "1.72", metricLabel: "pt review gap", title: "E-Commerce Performance & Segmentation", desc: "MySQL · RFM in Python · Power BI + DAX", section: "work" },
+        followups: ["Do you know SQL?", "What about machine learning?"] },
+
+      { keys: ["machine learning", "ml", "k-means", "kmeans", "cluster", "model"], parts: [t("Applied ML, yes, using "), h("k-means clustering"), t(" over 4,479 SKUs with eight engineered features. Chose k = 5 via elbow and silhouette, then benchmarked against ABC/Pareto: the flat ranking hid 12 returns-prone products my clusters flagged.")],
+        card: { metric: "k = 5", metricLabel: "clusters selected", title: "Product Segmentation with K-Means", desc: "Feature engineering · log transforms · scikit-learn", section: "work" },
+        followups: ["How do you use statistics?", "Show your skills"] },
+
+      { keys: ["experience", "worked", "job", "career", "cwi", "aaa", "employer", "years"], parts: [t("2+ years professionally. Most recently "), h("Data Analyst at CWI Holdings (2023–2025)"), t(": built and maintained a MySQL warehouse database tracking 60+ material types, automated ETL with Python and VBA. Before that, client analytics at AAA.")],
+        card: { metric: "2+", metricLabel: "years", title: "CWI Holdings, Data Analyst", desc: "MySQL warehouse DB · Python/VBA ETL automation", section: "experience" },
+        followups: ["What about education?", "Show your projects"] },
+
+      { keys: ["education", "school", "degree", "boot camp", "bootcamp", "ucf", "university", "certif"], parts: [t("UCF's full-time "), h("Full-Stack Web Development Boot Camp (2022)"), t(", verified certificate. That engineering foundation is why my analyses ship as reproducible repos, not one-off notebooks.")],
+        card: { metric: "2022", metricLabel: "UCF · full-time", title: "Full-Stack Web Development", desc: "Verified credential (Parchment)", section: "experience" },
+        followups: ["Show your skills", "How can I reach you?"] },
+
+      { keys: ["skills", "stack", "tools", "tech", "know how"], parts: [h("SQL, Python, and Power BI"), t(" are the core. Around them: DAX, MySQL, Pandas, scikit-learn, statistics (A/B testing, bootstrap, hypothesis tests), and disciplined ETL and data-quality practice.")],
+        card: { metric: "7", metricLabel: "skill groups", title: "Skills & Tools", desc: "Full breakdown in the skills section", section: "skills" },
+        followups: ["Do you know Python?", "Do you know SQL?"] },
+
+      { keys: ["hireable", "available", "hiring", "open to", "relocat", "remote"], parts: [t("Yes, open to data analyst roles. "), h("2+ years' experience, four shipped analyses"), t(", and every claim here traces to a query you can run. Email AustinLDonovan@gmail.com.")],
+        card: { metric: "Open", metricLabel: "to data analyst roles", title: "Get in touch", desc: "Email · LinkedIn · GitHub", section: "contact" },
+        followups: ["What's your biggest project?", "Where's your resume?"] },
+
+      { keys: ["contact", "email", "reach", "linkedin", "github", "touch", "message"], parts: [t("Easiest: email "), h("AustinLDonovan@gmail.com"), t(". I'm also on LinkedIn (austinLD) and GitHub (AustinLD): all case studies and repos are public.")],
+        card: { metric: "@", metricLabel: "email is fastest", title: "Get in touch", desc: "Email · LinkedIn · GitHub", section: "contact" },
+        followups: ["Are you open to roles right now?"] },
+
+      { keys: ["resume", "cv", "pdf"], parts: [t("One-page PDF, one click: the "), h("Resume button in the top-right corner"), t(" downloads it. It covers everything on this page.")],
+        card: { metric: "PDF", metricLabel: "resume · 1 page", title: "Resume ↓ button, top right", desc: "Or email AustinLDonovan@gmail.com", section: "top" },
+        followups: ["What's your biggest project?"] },
+
+      { keys: ["about", "yourself", "who are you", "story", "background", "hobb"], parts: [t("Data analyst in Orlando, 2+ years' experience, with work spanning e-commerce, streaming, experimentation, and machine learning. I care about "), h("statistically sound findings"), t(" over dashboards for their own sake. Every claim here traces back to a query you can run.")],
+        card: null,
+        followups: ["Show your projects", "How can I reach you?"] },
+
+      { keys: ["hello", "hey", "hi "], parts: [t("Hi! Ask me anything about my work: projects, skills, experience, or try one of the suggestions below.")],
+        card: null,
+        followups: ["What's your biggest dataset?", "Do you know Python?", "Are you open to roles right now?"] }
+    ];
+  }
+
+  answer(q) {
+    const query = " " + q.toLowerCase() + " ";
+    let best = null, bestScore = 0;
+    for (const entry of this.kb()) {
+      let score = 0;
+      for (const k of entry.keys) if (query.includes(k)) score += k.length;
+      if (score > bestScore) { bestScore = score; best = entry; }
+    }
+    if (best) return best;
+    return { parts: [this.tx("I can speak to my projects, skills, experience, education, or how to reach me. Try one of these:")], card: null,
+      followups: ["Do you know SQL?", "What's your biggest project?", "How can I contact you?"] };
+  }
+
+  ask(q) {
+    q = (q || "").trim();
+    if (!q || this.state.thinking) return;
+    const userMsg = { id: Date.now(), isUser: true, isAi: false, text: q, parts: [], followups: [], hasCard: false };
+    this.setState(s => ({ messages: [...s.messages, userMsg], query: "", thinking: true }));
+    setTimeout(() => {
+      const a = this.answer(q);
+      const card = a.card ? { ...a.card, onOpen: () => this.goTo(a.card.section) } : null;
+      const aiMsg = {
+        id: Date.now() + 1, isUser: false, isAi: true, text: "",
+        parts: a.parts, hasCard: !!card, card: card,
+        followups: (a.followups || []).map(f => ({ q: f, onAsk: () => this.ask(f) }))
+      };
+      this.setState(s => ({ messages: [...s.messages, aiMsg], thinking: false }));
+    }, 650);
+  }
+
+  goTo(id) {
+    if (id === "top") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 64, behavior: "smooth" });
+  }
+
+  componentDidMount() {
+    this._onScroll = () => {
+      const ids = ["work", "skills", "experience", "about", "contact"];
+      let active = "";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < window.innerHeight * 0.4) active = id;
+      }
+      if (active !== this.state.active) this.setState({ active });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onKey = (e) => { if (e.key === "Escape" && this.state.openProject) this.setState({ openProject: null }); };
+    window.addEventListener("keydown", this._onKey);
+  }
+  componentWillUnmount() { window.removeEventListener("scroll", this._onScroll); window.removeEventListener("keydown", this._onKey); }
+
+  navStyle(id) {
+    const on = this.state.active === id;
+    return "cursor:pointer;padding:4px 0;transition:color .15s;border-bottom:2px solid " + (on ? "#8b5cf6" : "transparent") + ";color:" + (on ? "#fafafa" : "rgba(255,255,255,.55)");
+  }
+
+  renderVals() {
+    const showCursor = this.props.heroCursor ?? true;
+    const p = this.state.openProject ? this.projects()[this.state.openProject] : null;
+    const shots = p && p.shots ? p.shots : [];
+    const shotIdx = shots.length ? ((this.state.shotIndex % shots.length) + shots.length) % shots.length : 0;
+    const shotSrc = shots.length ? shots[shotIdx].src : "";
+    const shotIsVideo = /\.(mp4|webm)$/i.test(shotSrc);
+    const modal = p ? {
+      ...p,
+      hasShots: shots.length > 0,
+      shotSrc: shotSrc,
+      shotIsVideo: shotIsVideo,
+      shotIsImage: !shotIsVideo,
+      shotCap: shots.length ? shots[shotIdx].cap : "",
+      shotTag: shots.length ? shots[shotIdx].tag : "",
+      shotPos: (shotIdx + 1) + " / " + shots.length,
+      multiShots: shots.length > 1,
+      onPrevShot: () => this.setState(s => ({ shotIndex: s.shotIndex - 1 })),
+      onNextShot: () => this.setState(s => ({ shotIndex: s.shotIndex + 1 }))
+    } : { findings: [], tech: [] };
+    return {
+      modalOpen: !!p,
+      modal: modal,
+      openOlist: () => this.setState({ openProject: "olist", shotIndex: 0 }),
+      openSpotify: () => this.setState({ openProject: "spotify", shotIndex: 0 }),
+      openAbtest: () => this.setState({ openProject: "abtest", shotIndex: 0 }),
+      openKmeans: () => this.setState({ openProject: "kmeans", shotIndex: 0 }),
+      closeModal: () => this.setState({ openProject: null }),
+      stopProp: (e) => e.stopPropagation(),
+      showChat: this.props.showChat ?? true,
+      cursorStyle: showCursor ? "display:inline-block;width:18px;height:38px;background:#a78bfa;vertical-align:-4px;margin-left:12px;animation:blink 1.1s step-end infinite" : "display:none",
+      query: this.state.query,
+      messages: this.state.messages,
+      thinking: this.state.thinking,
+      onQueryChange: (e) => this.setState({ query: e.target.value }),
+      onKeyDown: (e) => { if (e.key === "Enter") this.ask(this.state.query); },
+      onSend: () => this.ask(this.state.query),
+      starterChips: ["Do you know SQL?", "What's your biggest dataset?", "A/B testing?", "Are you hireable?"].map(q => ({ q, onAsk: () => this.ask(q) })),
+      skillGroups: [
+        { label: "LANGUAGES", items: ["SQL", "Python", "DAX", "JavaScript", "VBA"] },
+        { label: "STATISTICS & ML", items: ["A/B testing", "Hypothesis testing", "Confidence intervals", "Bootstrap", "K-means", "RFM segmentation", "EDA"] },
+        { label: "BI & VISUALIZATION", items: ["Power BI", "Excel", "Google Sheets", "KPI reporting", "Dashboard design"] },
+        { label: "PYTHON LIBRARIES", items: ["Pandas", "scikit-learn", "Matplotlib", "Seaborn"] },
+        { label: "DATA MANAGEMENT", items: ["ETL workflows", "Data cleaning", "Validation", "Quality audits", "Data modeling", "Feature engineering", "Governance"] },
+        { label: "DATABASES & TOOLS", items: ["MySQL", "MS Access", "Git", "GitHub", "Jupyter", "Salesforce CRM"] }
+      ],
+      goTop: () => this.goTo("top"),
+      goWork: () => this.goTo("work"),
+      goSkills: () => this.goTo("skills"),
+      goExp: () => this.goTo("experience"),
+      goAbout: () => this.goTo("about"),
+      goContact: () => this.goTo("contact"),
+      navWorkStyle: this.navStyle("work"),
+      navSkillsStyle: this.navStyle("skills"),
+      navExpStyle: this.navStyle("experience"),
+      navAboutStyle: this.navStyle("about"),
+      navContactStyle: this.navStyle("contact")
+    };
+  }
+}
+</script>
+</body>
+</html>
