@@ -11,7 +11,7 @@ Personal portfolio site for Austin Donovan, a data analyst in Orlando, FL. A sin
 
 ## Tech
 
-Hand-authored HTML, CSS, and JavaScript on a small component runtime. Fonts (Geist) are self-hosted. React, ReactDOM, and Babel load from unpkg.com at runtime.
+HTML, CSS, and JavaScript on a small component runtime. Fonts (Geist) are self-hosted. React, ReactDOM, and Babel load from unpkg.com at runtime.
 
 ## Run locally
 
