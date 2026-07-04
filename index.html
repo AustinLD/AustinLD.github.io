@@ -301,7 +301,7 @@
       <div style="margin: 20px 28px 0; border: 1px solid rgba(255,255,255,.09); border-radius: 12px; overflow: hidden; background: #101014">
         <sc-if value="{{modal.hasShots}}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{modal.shotIsVideo}}" hint-placeholder-val="{{ false }}">
-            <video src="{{modal.shotSrc}}" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="width: 100%; display: block; background: #0d0d11"></video>
+            <video src="{{modal.shotSrc}}" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" preload="auto" style="width: 100%; display: block; background: #0d0d11"></video>
           </sc-if>
           <sc-if value="{{modal.shotIsImage}}" hint-placeholder-val="{{ false }}">
             <img src="{{modal.shotSrc}}" alt="{{modal.shotCap}}" style="width: 100%; display: block; background: #0d0d11">
@@ -628,6 +628,52 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+/* Demo-video autoplay enforcer. The gallery's <video> demos are declared with
+   muted/autoplay/loop, but those attributes don't reliably trigger playback
+   through the component runtime, and real browsers enforce autoplay policy.
+   This forces muted playback whenever a video mounts or its src changes, and
+   also on the modal-open click (a real user gesture), which satisfies every
+   browser's autoplay rules even if the muted attribute didn't register. */
+(function () {
+  function play(v) {
+    if (!v) return;
+    try {
+      v.muted = true; v.defaultMuted = true; v.setAttribute("muted", "");
+      v.playsInline = true; v.setAttribute("playsinline", "");
+      v.loop = true;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {
+        setTimeout(function () { v.muted = true; var r = v.play(); if (r && r.catch) r.catch(function () {}); }, 200);
+      });
+    } catch (e) {}
+  }
+  function scan() {
+    var vids = document.querySelectorAll("video");
+    for (var i = 0; i < vids.length; i++) { var v = vids[i]; if (v.paused || v.currentTime === 0) play(v); }
+  }
+  var obs = new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {
+      var m = muts[i];
+      if (m.addedNodes) for (var j = 0; j < m.addedNodes.length; j++) {
+        var n = m.addedNodes[j];
+        if (n.nodeType === 1) {
+          if (n.tagName === "VIDEO") play(n);
+          if (n.querySelectorAll) { var inner = n.querySelectorAll("video"); for (var k = 0; k < inner.length; k++) play(inner[k]); }
+        }
+      }
+      if (m.type === "attributes" && m.target && m.target.tagName === "VIDEO") play(m.target);
+    }
+  });
+  function start() {
+    obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["src"] });
+    document.addEventListener("click", function () { setTimeout(scan, 60); }, true);
+    setInterval(scan, 1000);
+    scan();
+  }
+  if (document.body) start(); else document.addEventListener("DOMContentLoaded", start);
+})();
 </script>
 </body>
 </html>
